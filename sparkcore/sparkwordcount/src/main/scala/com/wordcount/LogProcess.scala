@@ -11,9 +11,9 @@ object LogProcess {
   def main(args: Array[String]): Unit = {
     val sc = new SparkContext(new SparkConf().setAppName("log").setMaster("local[*]"))
     //load data
-    val logRDD: RDD[String] = sc.textFile("./log")
+    val logRDD: RDD[String] = sc.textFile("hdfs://hadoop102:9000/sparks/provinceAd.log")
 
-    /** 1516609143867 6 7 64 16
+    /** 1536507575 6 7 64 16
       * timestamp province city uid adId
       * AdClick 将数据转换成对象 */
     val adClickRDD: RDD[AdClick] = logRDD.map {
@@ -25,7 +25,7 @@ object LogProcess {
     //统计每一个省份点击TOP3的广告ID
     demand1(adClickRDD)
     //统计每一个省份每一个小时的TOP3广告的ID
-    demand2()
+//    demand2()
 
     sc.stop()
 
@@ -59,12 +59,12 @@ object LogProcess {
       case (pro, items) =>
         //当前这个省份TOP3的广告集合
         val filterItems: Array[(Int, Int)] =
-          items.toList.sortWith(_._2 < _._2).take(3).toArray
-        val result = new ArrayBuffer[String]()
+          items.toList.sortWith(_._2 > _._2).take(2).toArray
+        val buffer = new ArrayBuffer[String]()
         for (item <- filterItems) {
-          result += (pro + "、" + item._1 + "、" + item._2)
+          buffer += (pro + "、" + item._1 + "、" + item._2)
         }
-        result
+        buffer
     }
 
     result.collect.foreach(println)
