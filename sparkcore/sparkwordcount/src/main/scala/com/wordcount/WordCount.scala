@@ -1,11 +1,13 @@
 package com.wordcount
 
 import org.apache.spark.{SparkConf, SparkContext}
+import org.slf4j.LoggerFactory
 
 object WordCount extends App {
+  val logger = LoggerFactory.getLogger(WordCount.getClass)
   //声明配置
   val sparkConf = new SparkConf().setAppName("wordCount")
-//    .setMaster("spark://hadoop102:7077")
+    //    .setMaster("spark://hadoop102:7077")
     .setMaster("local[*]")
 
   //创建SparkContext
@@ -18,11 +20,13 @@ object WordCount extends App {
 
   val word2count = words.map((_, 1))
 
-  val result = word2count.reduceByKey(_ + _)
+  val result = word2count.reduceByKey(_ + _).sortBy(_._2, false)
 
-  result.saveAsTextFile("hdfs://hadoop102:9000/sparks/01wc3")
+  result.collect().foreach(println)
+  //  result.saveAsTextFile("hdfs://hadoop102:9000/sparks/01wc3")
 
-  //关闭Spark连接
+  logger.info("complete!")
+
   sc.stop()
 
   /*sc.textFile("hdfs://hadoop102:9000/sparks/README.md")
