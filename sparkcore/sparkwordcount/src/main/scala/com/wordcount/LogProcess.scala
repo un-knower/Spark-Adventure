@@ -25,7 +25,7 @@ object LogProcess {
     //统计每一个省份点击TOP3的广告ID
     demand1(adClickRDD)
     //统计每一个省份每一个小时的TOP3广告的ID
-//    demand2()
+    //demand2()
 
     sc.stop()
 
@@ -58,8 +58,7 @@ object LogProcess {
     val result: RDD[String] = pro2Ads.flatMap {
       case (pro, items) =>
         //当前这个省份TOP3的广告集合
-        val filterItems: Array[(Int, Int)] =
-          items.toList.sortWith(_._2 > _._2).take(2).toArray
+        val filterItems: Array[(Int, Int)] = items.toList.sortWith(_._2 > _._2).take(2).toArray
         val buffer = new ArrayBuffer[String]()
         for (item <- filterItems) {
           buffer += (pro + "、" + item._1 + "、" + item._2)
