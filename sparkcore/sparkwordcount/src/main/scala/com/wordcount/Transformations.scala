@@ -2,7 +2,7 @@ package com.wordcount
 
 import org.apache.spark.{SparkConf, SparkContext}
 
-object RDDTransformations extends App {
+object Transformations extends App {
   val sc = new SparkContext(new SparkConf().setAppName("wordCount").setMaster("local[*]"))
 
   val rdd = sc.makeRDD(0 to 10)
@@ -126,7 +126,7 @@ object RDDTransformations extends App {
   // Array[(Int, String)] = Array((6,cc), (3,aa), (2,bb), (1,dd))
 
   println("====== 17、def sortBy[K]( f: (T) => K, ascending: Boolean = true, numPartitions: Int = this.partitions.length) (implicit ord: Ordering[K], ctag: ClassTag[K]): RDD[T]   根据f函数提供可以排序的key =================================")
-  val rdd17 = sc.parallelize(List(1, 2, 3, 4))
+  val rdd17 = sc.parallelize(List(4, 2, 3, 1))
   rdd17.sortBy(x => x).collect()
   //  Array[Int] = Array(1, 2, 3, 4)
   rdd17.sortBy(x => x % 3).collect()
@@ -145,10 +145,10 @@ object RDDTransformations extends App {
   //  Array[(Int, (Option[String], Int))] = Array((1,(Some(a),4)), (2,(Some(b),5)), (3,(Some(c),6)), (4,(None,4)))
 
   println("====== 19、def cogroup[W](other: RDD[(K, W)], partitioner: Partitioner) : RDD[(K, (Iterable[V], Iterable[W]))]  分别将相同key的数据聚集在一起。 =================================")
-  val rdd1 = sc.makeRDD(Array((1, 1), (1, 2), (2, 3), (2, 4), (3, 5)))
+  val rdd1 = sc.makeRDD(Array((1, 1), (1, "e"), (2, 3), (2, 4), (3, 5)))
   val rdd2 = sc.parallelize(Array((1, "a"), (1, "d"), (2, "b"), (3, "c")))
   println(rdd1.cogroup(rdd2).collect.mkString(","))
-  //  Array[(Int, (Iterable[Int], Iterable[String]))] = Array((1,(CompactBuffer(1, 2),CompactBuffer(a, d))), (2,(CompactBuffer(3, 4),CompactBuffer(b))), (3,(CompactBuffer(5),CompactBuffer(c))))
+  //  Array[(Int, (Iterable[Int], Iterable[String]))] = Array((1,(CompactBuffer(1, e),CompactBuffer(a, d))),(2,(CompactBuffer(3, 4),CompactBuffer(b))),(3,(CompactBuffer(5),CompactBuffer(c))))
 
   /*20、def cartesian[U: ClassTag](other: RDD[U]): RDD[(T, U)]  做笛卡尔积。  n * m
   21、def pipe(command: String): RDD[String] 执行外部脚本
