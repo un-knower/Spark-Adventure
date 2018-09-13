@@ -57,9 +57,9 @@ object Transformations extends App {
   //Array[(Int, Int)] = Array((2,7), (1,3), (3,5))
 
   println("====== 12、def groupByKey(partitioner: Partitioner): RDD[(K, Iterable[V])]  将key相同的value聚集在一起。=================================")
-  val rdd12 = sc.makeRDD(Array((1, 1), (1, 2), (2, 3), (2, 4), (3, 5)))
+  val rdd12 = sc.makeRDD(Array((1, 2), (1, 1), (2, 4), (2, 3), (3, 5)))
   println(rdd12.groupByKey.collect.mkString(" "))
-  //Array[(Int, Iterable[Int])] = Array((2,CompactBuffer(3, 4)), (1,CompactBuffer(1, 2)), (3,CompactBuffer(5)))
+  //Array[(Int, Iterable[Int])] = Array((1,CompactBuffer(2, 1)) (2,CompactBuffer(4, 3)) (3,CompactBuffer(5)))
 
   println(rdd12.groupByKey.map(t => (t._1, t._2.sum)).collect.mkString(" "))
   //Array[(Int, Int)] = Array((2,7), (1,3), (3,5))
