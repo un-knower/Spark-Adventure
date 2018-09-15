@@ -8,7 +8,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class AdClick(timestamp: Long, province: Int, city: Int, uid: Int, adId: Int, hourStamp: String)
+case class AdClick(timeStamp: Long, province: Int, city: Int, uid: Int, adId: Int, hourStamp: String)
 
 object LogProcess {
   def main(args: Array[String]): Unit = {
