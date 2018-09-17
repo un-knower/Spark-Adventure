@@ -61,12 +61,17 @@ object CustomerAccumulator {
 
     val sc = new SparkContext(new SparkConf().setAppName("partittoner").setMaster("local[*]"))
 
-    val abc = "HIII"
+    //本地变量 每个分区中有一个copy,一万个分区就一万个copy
+    val abc = "broadcast"
+    //通过sc.broadcast 来创建一个广播变量。每一个Executor中会有该变量的一次Copy。一个Executor【JVM进程】中有很多分区
+    val broadcastVar = sc.broadcast(abc)
+    println(broadcastVar.value)   //通过value方法获取广播变量的内容。
 
+    //使用方法
     val hashAcc = new CustomerAccumulator()
     sc.register(hashAcc, "abc")
 
-    val rdd = sc.makeRDD(Array("a", "b", "c", "a", "b", "c", "d"))
+    val rdd = sc.makeRDD(Array("a", "b", "c", "a", "b", "c", "d"),5)
 
     rdd.foreach(hashAcc.add)
 
