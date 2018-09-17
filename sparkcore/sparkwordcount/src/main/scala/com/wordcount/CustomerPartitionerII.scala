@@ -12,7 +12,7 @@ class CustomerPartitionerII(numParts: Int) extends Partitioner {
     key match {
       case (k, _) => val kStr: String = k.toString
         /** "unhappy".substring(2) returns "happy"
-          * "Harbison".substring(3) returns "bison" */
+          * "HarBison".substring(3) returns "Bison" */
         kStr.substring(kStr.length - 1).toInt % numParts
       case _ => -1
     }
@@ -21,7 +21,7 @@ class CustomerPartitionerII(numParts: Int) extends Partitioner {
 
 object CustomerPartitionerII {
   def main(args: Array[String]) {
-    val sc = new SparkContext(new SparkConf().setAppName("partittoner").setMaster("local[*]"))
+    val sc = new SparkContext(new SparkConf().setAppName("partitioner").setMaster("local[*]"))
 
     val data = sc.parallelize(List("aa.2", "bb.2", "cc.3", "dd.3", "ee.5").zipWithIndex, 5)
     println(data.collect.mkString(",")) //(aa.2,0),(bb.2,1),(cc.3,2),(dd.3,3),(ee.5,4) <=zipWithIndex
