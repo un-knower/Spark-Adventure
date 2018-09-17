@@ -30,24 +30,22 @@ class CustomerAccumulator extends AccumulatorV2[String, mutable.HashMap[String, 
   }
 
   // 每一个分区中用于添加数据的方法 小SUM
-  override def add(v: String): Unit = {
-  //_hashAcc += (v -> (_hashAcc.getOrElse(v, 0) + 1))
-    _hashAcc.get(v) match {
-      case None => _hashAcc += ((v, 1))
-      case Some(a) => _hashAcc += ((v, a + 1))
+  override def add(k: String): Unit = {
+  //_hashAcc += (k -> (_hashAcc.getOrElse(k, 0) + 1))
+    _hashAcc.get(k) match {
+      case None => _hashAcc += ((k, 1))
+      case Some(a) => _hashAcc += ((k, a + 1))
     }
   }
 
   // 合并每一个分区的输出 总sum
   override def merge(other: AccumulatorV2[String, mutable.HashMap[String, Int]]): Unit = {
-    other match {
-      case o: AccumulatorV2[String, mutable.HashMap[String, Int]] =>
-        for ((k, v) <- o.value) {
-          _hashAcc.get(k) match {
-            case None => _hashAcc += ((k, v))
-            case Some(a) => _hashAcc += ((k, a + v))
-          }
-        }
+    for ((k, v) <- other.value) {
+    //_hashAcc += (k -> (_hashAcc.getOrElse(k, 0) + v))
+      _hashAcc.get(k) match {
+        case None => _hashAcc += ((k, v))
+        case Some(a) => _hashAcc += ((k, a + v))
+      }
     }
   }
 
