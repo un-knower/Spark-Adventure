@@ -10,7 +10,7 @@ class CustomerPartitionerII(numParts: Int) extends Partitioner {
   //覆盖分区号获取函数
   override def getPartition(key: Any): Int = {
     key match {
-      case (k, v) => val kStr: String = k.toString
+      case (k, _) => val kStr: String = k.toString
         /** "unhappy".substring(2) returns "happy"
           * "Harbison".substring(3) returns "bison" */
         kStr.substring(kStr.length - 1).toInt % numParts
