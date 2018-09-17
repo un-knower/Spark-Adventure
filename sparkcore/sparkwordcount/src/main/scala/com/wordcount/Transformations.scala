@@ -5,6 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object Transformations extends App {
   val sc = new SparkContext(new SparkConf().setAppName("wordCount").setMaster("local[*]"))
 
+  //因为我是十二核电脑 ,默认是电脑核数和2的max
   val rdd = sc.makeRDD(0 to 10)
   println("====== 1、def map[U: ClassTag](f: T => U): RDD[U]  一对一转换=================================")
   println(rdd.map(x => x * 2).collect.mkString(" "))
