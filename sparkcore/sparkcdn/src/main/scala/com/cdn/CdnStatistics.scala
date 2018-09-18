@@ -6,12 +6,9 @@ import org.slf4j.LoggerFactory
 
 import scala.util.matching.Regex
 
-/**
-  * Created by wuyufei on 31/07/2017.
-  */
-object CdnStatics {
+object CdnStatistics {
 
-  val logger = LoggerFactory.getLogger(CdnStatics.getClass)
+  val logger = LoggerFactory.getLogger(CdnStatistics.getClass)
 
   //匹配IP地址
   val IPPattern = "((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))".r
@@ -26,11 +23,12 @@ object CdnStatics {
   val httpSizePattern = ".*\\s(200|206|304)\\s([0-9]+)\\s.*".r
 
   def main(args: Array[String]): Unit = {
-    val conf = new SparkConf().setMaster("local[*]").setAppName("CdnStatics")
+    val sc = new SparkContext(new SparkConf().setMaster("local[*]").setAppName("CdnStatistics"))
 
-    val sc = new SparkContext(conf)
-
-    val input = sc.textFile("C:\\Users\\Administrator\\Desktop\\【尚硅谷】大数据技术之Spark\\3.code\\spark\\sparkCore\\sparkcore_cdn\\src\\main\\resources\\cdn.txt").cache()
+    val input = sc.textFile("D:\\Soft\\DevSoft\\IDEA\\spark\\sparkcore\\sparkcdn\\src\\main\\resources\\cdn.txt").cache()
+    //IP 命中率 响应时间 请求时间 请求方法 请求URL    请求协议 状态码 响应大小 referer 用户代理
+    //ClientIP Hit/Miss ResponseTime [RequestTime] Method URL Protocol StatusCode TrafficSize Referer UserAgent
+    //111.19.97.15 HIT 18 [15/Feb/2017:00:00:39 +0800] "GET http://cdn.v.abc.com.cn/videojs/video-js.css HTTP/1.1" 200 14727 "http://www.zzqbsm.com/" "Mozilla/5.0+(Linux;+Android+5.1;+vivo+X6Plus+D+Build/LMY47I)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/35.0.1916.138+Mobile+Safari/537.36+T7/7.4+baiduboxapp/8.2.5+(Baidu;+P1+5.1)"
 
     //统计独立IP访问量前10位
     ipStatics(input)
@@ -73,8 +71,13 @@ object CdnStatics {
     }
 
     //3.统计一天中每个小时间的流量
-    data.filter(x=>isMatch(httpSizePattern,x)).filter(x=>isMatch(timePattern,x)).map(x=>getTimeAndSize(x)).groupByKey()
-      .map(x=>(x._1,x._2.sum)).sortByKey().foreach(x=>println(x._1+"时 CDN流量="+x._2/(1024*1024*1024)+"G"))
+    data.filter(x=>isMatch(httpSizePattern,x))
+      .filter(x=>isMatch(timePattern,x))
+      .map(x=>getTimeAndSize(x))
+      .groupByKey()
+      .map(x=>(x._1,x._2.sum))
+      .sortByKey()
+      .foreach(x=>println(x._1+"时 CDN流量="+x._2/(1024*1024*1024)+"G"))
   }
 
   // 统计每个视频独立IP数
@@ -90,7 +93,6 @@ object CdnStatics {
 
   // 统计独立IP访问量前10位
   def ipStatics(data: RDD[String]): Unit = {
-
     //1.统计独立IP数
     val ipNums = data.map(x => (IPPattern.findFirstIn(x).get, 1)).reduceByKey(_ + _).sortBy(_._2, false)
 

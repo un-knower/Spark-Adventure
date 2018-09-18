@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>sparkwordcount</module>
+        <module>sparkcdn</module>
+        <module>akka</module>
     </modules>
 
     <dependencies>
