@@ -35,7 +35,7 @@ object Transformations extends App {
   println(rdd5.sample(true, 0.3, 4).collect.mkString(" "))
   //Array[Int] = Array(2 3 4 5 5)
 
-  println("====== 7、def union(other: RDD[T]): RDD[T]  联合一个RDD，返回组合的RDD=================================")
+  println("====== 7、def union(other: RDD[T]): RDD[T]  联合一个RDD，返回组合的RDD    和++相同=================================")
   println(sc.makeRDD(1 to 5).union(sc.makeRDD(5 to 10)).collect.mkString(" "))
   //Array[Int] = Array(1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10)
 
@@ -146,6 +146,7 @@ object Transformations extends App {
   //  Array[(Int, (Option[String], Int))] = Array((1,(Some(a),4)), (2,(Some(b),5)), (3,(Some(c),6)), (4,(None,4)))
 
   println("====== 19、def cogroup[W](other: RDD[(K, W)], partitioner: Partitioner) : RDD[(K, (Iterable[V], Iterable[W]))]  分别将相同key的数据聚集在一起。 =================================")
+  //分别将相同key的数据聚集在一起。
   val rdd1 = sc.makeRDD(Array((1, 1), (1, "e"), (2, 3), (2, 4), (3, 5)))
   val rdd2 = sc.parallelize(Array((1, "a"), (1, "d"), (2, "b"), (3, "c")))
   println(rdd1.cogroup(rdd2).collect.mkString(","))
@@ -158,6 +159,7 @@ object Transformations extends App {
   res38: Array[String] = Array(AA, >>>hi, >>>Hello, >>>how, >>>are, >>>you)*/
 
   println("====== 22、def coalesce(numPartitions: Int, shuffle: Boolean = false,partition: Option[Partition] = Option.empty)(implicit ord: Ordering[T] = null): RDD[T]   缩减分区数，用于大数据集过滤后，提高小数据集的执行效率。 =================================")
+  //缩减分区为指定分区数，用于大数据集过滤后，提高小数据集的执行效率。
   val rdd22 = sc.parallelize(1 to 16, 4)
   val coalesceRDD = rdd22.coalesce(3)
   println(coalesceRDD.partitions.size)
@@ -173,6 +175,7 @@ object Transformations extends App {
   // Array[String] = Array(0: [2,6,10,14], 1: [3,7,11,15], 2: [4,8,12,16], 3: [1,5,9,13])
 
   println("====== 24、def repartitionAndSortWithinPartitions(partitioner: Partitioner): RDD[(K, V)]  如果重新分区后需要排序，那么直接用这个。在给定的partitioner内部进行排序 =================================")
+  //如果重新分区后需要排序，那么直接用这个。在给定的partitioner内部进行排序
   val rdd24 = sc.parallelize(Array((3, "aa"), (6, "cc"), (2, "bb"), (1, "dd")))
   rdd24.mapPartitionsWithIndex((i, items) => Iterator(i + ": [" + items.mkString(",") + "]")).collect
   //  Array[String] = Array(0: [(3,aa),(6,cc)], 1: [(2,bb),(1,dd)])
