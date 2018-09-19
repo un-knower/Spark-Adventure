@@ -2,16 +2,16 @@ package com.wordcount
 
 import org.apache.spark.{Partitioner, SparkConf, SparkContext}
 
-class CustomerPartitioner(numPartiton: Int) extends Partitioner {
+class CustomerPartitioner(numPartition: Int) extends Partitioner {
 
   // 返回分区的总数
   override def numPartitions: Int = {
-    numPartiton
+    numPartition
   }
 
   // 根据传入的Key返回分区的索引
   override def getPartition(key: Any): Int = {
-    key.toString.toInt % numPartiton
+    key.toString.toInt % numPartition
   }
 }
 
@@ -19,7 +19,7 @@ object CustomerPartitioner {
 
   def main(args: Array[String]): Unit = {
 
-    val sc = new SparkContext(new SparkConf().setAppName("partittoner").setMaster("local[*]"))
+    val sc = new SparkContext(new SparkConf().setAppName("partitioner").setMaster("local[*]"))
 
     val rdd = sc.makeRDD(0 to 10, 1).zipWithIndex()
     println(rdd.collect.mkString(" "))
