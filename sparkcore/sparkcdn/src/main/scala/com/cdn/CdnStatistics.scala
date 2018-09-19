@@ -2,14 +2,10 @@ package com.cdn
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.LoggerFactory
 
 import scala.util.matching.Regex
 
 object CdnStatistics {
-
-  val logger = LoggerFactory.getLogger(CdnStatistics.getClass)
-
   //匹配IP地址
   val IPPattern: Regex = "((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))".r
   val IPPatterm: Regex = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))".r

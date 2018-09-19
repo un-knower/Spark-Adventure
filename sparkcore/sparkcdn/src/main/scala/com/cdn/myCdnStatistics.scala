@@ -2,14 +2,11 @@ package com.cdn
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
 import scala.util.matching.Regex
 
 object myCdnStatistics {
-
-  val logger = LoggerFactory.getLogger(CdnStatistics.getClass)
-
   //匹配IP地址
   val IPPattern: Regex = "((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))".r
   val IPPatterm: Regex = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))".r
@@ -86,14 +83,14 @@ object myCdnStatistics {
     val sortedRDD = data
       .filter(x => x.matches(".*\\s(200|206|304)\\s([0-9]+)\\s.*"))
       .filter(x => x.matches(".*(2017):([0-9]{2}):[0-9]{2}:[0-9]{2}.*"))
-      .map(x => (x.substring(x.indexOf("[") + 13, x.indexOf("[") + 15).toInt, "(200|206|304)\\s([0-9]+)".r.findFirstIn(x).get.substring(4).toLong))
+      .map(x => (x.substring(x.indexOf("[") + 13, x.indexOf("[") + 15), "(200|206|304)\\s([0-9]+)".r.findFirstIn(x).get.substring(4).toLong))
       .reduceByKey(_ + _)
       .sortByKey()
 
 //    println(sortedRDD.collect().mkString("\n"))
 //    println(sortedRDD.mapPartitionsWithIndex((pNum, items) => Iterator(pNum + ": [" + items.mkString(",") + "]")).collect.mkString(" "))
 
-    sortedRDD.take(24)/**要take才能按顺序排序*/.foreach(t => println(t._1 + " o'clock " + t._2.toLong / 1073741824 + "G"))
+    sortedRDD.take(24)/**要take才能按顺序排序*/.foreach(t => println(t._1 + " o'clock " + t._2 / (1024*1024*1024) + "G"))
 
   }
 }
