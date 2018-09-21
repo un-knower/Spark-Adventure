@@ -7,7 +7,7 @@ import org.apache.spark.sql.{Encoder, Encoders, SparkSession}
 case class Employee(name: String, salary: Long)
 case class Aver(var sum: Long, var count: Int)
 // =======================================================================
-// 强类型UDAF usually with group by (按 属性的相同字段 group)  【DSL使用】
+// 强类型UDAF usually with group by (按 属性的相同字段 group)  【DSL使用】有点鸡肋
 // =======================================================================
 class AverageAggregator extends Aggregator[Employee, Aver, Double] {
 
