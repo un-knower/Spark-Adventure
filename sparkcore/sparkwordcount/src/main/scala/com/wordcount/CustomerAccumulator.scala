@@ -5,7 +5,6 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable
 
-
 class CustomerAccumulator extends AccumulatorV2[String, mutable.HashMap[String, Int]] {
 
   private val _hashAcc = new mutable.HashMap[String, Int]()
