@@ -45,9 +45,7 @@ class AverageAggregator extends Aggregator[Employee, Aver, Double] {
 object AverageAggregator{
 
   def main(args: Array[String]): Unit = {
-
-    val sparkConf = new SparkConf().setAppName("udaf").setMaster("local[*]")
-    val spark = SparkSession.builder().config(sparkConf).getOrCreate()
+    val spark = SparkSession.builder().config(new SparkConf().setAppName("udaf").setMaster("local[*]")).getOrCreate()
 
     import spark.implicits._
 
@@ -56,9 +54,9 @@ object AverageAggregator{
 
     val aver = new AverageAggregator().toColumn.name("average")
 
-    employee.select(aver).show()
+    employee.select(aver).show()  //只能用DSL模式
 
-//    spark.sql("select average(salary) from employee").show()
+//    spark.sql("select average(salary) from employee").show()//会报错 不能用SQL模式
 
     spark.stop()
   }

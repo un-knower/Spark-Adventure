@@ -9,9 +9,7 @@ import org.apache.spark.sql.types._
 {"name":"Andy", "salary":4500}
 {"name":"Justin", "salary":3500}
 {"name":"Berta", "salary":4000}
-  目标：求平均工资  【工资的总额，工资的个数】
-*/
-//自定义UDAF函数需要继承UserDefinedAggregateFunction
+  目标：求平均工资  【工资的总额，工资的个数】*/
 // =======================================================================
 // 弱类型UDAF usually with group by (按 属性的相同字段group)
 // =======================================================================
