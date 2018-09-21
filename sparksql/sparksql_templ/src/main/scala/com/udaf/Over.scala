@@ -21,29 +21,25 @@ object Over extends App {
   scoreDF.createOrReplaceTempView("score")
   scoreDF.show()
 
-//  println("//***************  求每个班最高成绩学生的信息  ***************/")
-//  println("    /*******  开窗函数的表  ********/")
-//  spark.sql("select name,class,score, rank() over(partition by class order by score desc) rank from score").show()
-//
-//  println("    /*******  计算结果的表  *******")
-//  spark.sql("select * from " +
-//    "( select name,class,score,rank() over(partition by class order by score desc) rank from score) " +
-//    "as t " +
-//    "where t.rank=1").show()
+  println("//***************  求每个班最高成绩学生的信息  ***************/")
+  println("    /*******  开窗函数的表  ********/")
+  spark.sql("select name,class,score, rank() over(partition by class order by score desc) rank from score").show()
 
-  //spark.sql("select name,class,score,row_number() over(partition by class order by score desc) rank from score").show()
+  println("    /*******  计算结果的表  *******")
+  spark.sql("select * from " +
+    "( select name,class,score,rank() over(partition by class order by score desc) rank from score) t " +
+    "where t.rank=1").show()
+
+  spark.sql("select *, row_number() over(partition by class order by score desc) rown from score").show()
 
   println("/**************  求每个班最高成绩学生的信息（groupBY）  ***************/")
 
   spark.sql("select class,max(score) from score group by class").show
 //  spark.sql("select name, class,max(score) from score group by class").show //不行会报错 name 不再group里面 也不在聚合函数里
 
-  spark.sql("select s1.name, s2.class, s2.max from\n" +
+  spark.sql("select s1.* from\n" +
     "score s1 join (select class,max(score) max from score group by class ) s2\n" +
     "on s1.class =s2.class and s1.score=s2.max").show
-  spark.sql("select s1.name, s2.class, s2.max from " +
-    "score s1, (select class,max(score) max from score group by class ) s2 " +
-    "where s1.class =s2.class and s1.score=s2.max").show
 
   /*println("rank（）跳跃排序，有两个第二名时后边跟着的是第四名\n" +
     "dense_rank() 连续排序，有两个第二名时仍然跟着第三名\n" +
