@@ -5,7 +5,6 @@ import org.apache.spark.sql.expressions.Aggregator
 import org.apache.spark.sql.{Encoder, Encoders, SparkSession}
 
 case class Employee(name: String, salary: Long)
-
 case class Aver(var sum: Long, var count: Int)
 // =======================================================================
 // 强类型UDAF usually with group by (按 属性的相同字段 group)  【DSL使用】
@@ -49,9 +48,11 @@ object AverageAggregator{
 
     import spark.implicits._
 
+    //需要是DataSet
     val employee = spark.read.json("sparksql\\sparksql_templ\\src\\main\\resources\\employees.json")
       .as[Employee]
 
+    //注册强类型UDAF的方法
     val aver = new AverageAggregator().toColumn.name("average")
 
     employee.select(aver).show()  //只能用DSL模式
