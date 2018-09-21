@@ -2,7 +2,6 @@ package com.wordcount
 
 import org.apache.spark.util.AccumulatorV2
 import org.apache.spark.{SparkConf, SparkContext}
-
 import scala.collection.mutable
 
 class CustomerAccumulator extends AccumulatorV2[String, mutable.HashMap[String, Int]] {
@@ -57,7 +56,6 @@ class CustomerAccumulator extends AccumulatorV2[String, mutable.HashMap[String, 
 object CustomerAccumulator {
 
   def main(args: Array[String]): Unit = {
-
     val sc = new SparkContext(new SparkConf().setAppName("partittoner").setMaster("local[*]"))
 
     //本地变量 每个分区中有一个copy,一万个分区就一万个copy
