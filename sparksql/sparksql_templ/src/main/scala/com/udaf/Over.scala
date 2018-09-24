@@ -23,25 +23,66 @@ object Over extends App {
 
   println("//***************  求每个班最高成绩学生的信息  ***************/")
   println("    /*******  开窗函数的表  ********/")
-  spark.sql("select name,class,score, rank() over(partition by class order by score desc) rank from score").show()
+  spark.sql(
+    s"""
+       |SELECT
+       |    *, row_number () over (PARTITION BY class ORDER BY score DESC) rown
+       |FROM
+       |    score
+     """.stripMargin).show()  //row_number和rank的区别
+
+  spark.sql(
+    s"""
+       |SELECT
+       |    NAME, class, score, rank () over (PARTITION BY class
+       |                                      ORDER BY score DESC) rank
+       |FROM
+       |    score
+     """.stripMargin).show()
 
   println("    /*******  计算结果的表  *******")
-  spark.sql("select * from " +
-    "( select name,class,score,rank() over(partition by class order by score desc) rank from score) t " +
-    "where t.rank=1").show()
+  spark.sql(
+    s"""
+       |SELECT
+       |    *
+       |FROM
+       |    (SELECT
+       |        *, rank () over (PARTITION BY class
+       |                         ORDER BY score DESC) rank
+       |    FROM
+       |        score) t
+       |WHERE t.rank = 1
+     """.stripMargin).show()
 
-  spark.sql("select *, row_number() over(partition by class order by score desc) rown from score").show()
+  println("/**************  求每个班最高成绩学生的信息（groupBY）  join了效率低***************/")
 
-  println("/**************  求每个班最高成绩学生的信息（groupBY）  ***************/")
-
-  spark.sql("select class,max(score) from score group by class").show
+  spark.sql(
+    s"""
+       |SELECT
+       |    class, MAX(score)
+       |FROM
+       |    score
+       |GROUP BY class
+     """.stripMargin).show
 //  spark.sql("select name, class,max(score) from score group by class").show //不行会报错 name 不再group里面 也不在聚合函数里
 
-  spark.sql("select s1.* from\n" +
-    "score s1 join (select class,max(score) max from score group by class ) s2\n" +
-    "on s1.class =s2.class and s1.score=s2.max").show
+  spark.sql(
+    s"""
+       |SELECT
+       |    s1.*
+       |FROM
+       |    score s1
+       |    JOIN
+       |        (SELECT
+       |            class, MAX(score) MAX
+       |        FROM
+       |            score
+       |        GROUP BY class) s2
+       |        ON s1.class = s2.class
+       |        AND s1.score = s2.max
+     """.stripMargin).show
 
-  /*println("rank（）跳跃排序，有两个第二名时后边跟着的是第四名\n" +
+ /**println("rank（）跳跃排序，有两个第二名时后边跟着的是第四名\n" +
     "dense_rank() 连续排序，有两个第二名时仍然跟着第三名\n" +
     "over（）开窗函数：\n" +
     "       在使用聚合函数后，会将多行变成一行，而开窗函数是将一行变成多行；\n" +

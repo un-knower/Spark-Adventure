@@ -4,12 +4,11 @@ import org.apache.spark.SparkConf
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 object UDF extends App {
-  val path = "sparksql\\sparksql_templ\\src\\main\\resources\\people.json"
   val sparkConf = new SparkConf().setAppName("sparksql").setMaster("local[*]")
   val spark = SparkSession.builder().config(sparkConf).getOrCreate()
   val sc = spark.sparkContext
 
-  val people: DataFrame = spark.read.json(path)
+  val people: DataFrame = spark.read.json("sparksql\\sparksql_templ\\src\\main\\resources\\people.json")
   people.createOrReplaceTempView("people")
 
   // =======================================================================
