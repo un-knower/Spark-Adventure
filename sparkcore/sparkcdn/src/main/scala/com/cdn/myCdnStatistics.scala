@@ -23,28 +23,29 @@ object myCdnStatistics {
   def main(args: Array[String]): Unit = {
     val sc = new SparkContext(new SparkConf().setMaster("local[*]").setAppName("CdnStatistics"))
 
-    val input = sc.textFile("D:\\Soft\\DevSoft\\IDEA\\spark\\sparkcore\\sparkcdn\\src\\main\\resources\\cdn.txt").cache()
+    val input = sc.textFile("sparkcore\\sparkcdn\\src\\main\\resources\\cdn.txt").cache()
     //IP      命中率     响应时间      请求时间      请求方法 请求URL 请求协议 状态码  响应大小     referer 用户代理
     //ClientIP Hit/Miss ResponseTime [RequestTime] Method URL Protocol StatusCode TrafficSize Referer UserAgent
     //111.19.97.15 HIT 18 [15/Feb/2017:00:00:39 +0800] "GET http://cdn.v.abc.com.cn/videojs/video-js.css HTTP/1.1" 200 14727 "http://www.zzqbsm.com/" "Mozilla/5.0+(Linux;+Android+5.1;+vivo+X6Plus+D+Build/LMY47I)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/35.0.1916.138+Mobile+Safari/537.36+T7/7.4+baiduboxapp/8.2.5+(Baidu;+P1+5.1)"
 
     //计算独立IP数   统计独立IP访问量前10位
-//    ipStatistics(input)
+    ipStatistics(input)
 
     //统计每个视频独立IP数
 //    videoIpStatistics(input)
 
     //统计一天中每个小时间的流量
-    flowOfHour(input)
+//    flowOfHour(input)
 
     sc.stop()
   }
 
   //count independent IP   | Output the number of IP access before the top 10
   def ipStatistics(data: RDD[String]): Unit = {
-    data.map(x => (IPPattern.findFirstIn(x).get, 1)).reduceByKey(_ + _).sortBy(_._2, false)
     //RegularExpression
-    val independentIP = data
+    val independentIP = data.map(x => (IPPattern.findFirstIn(x).get, 1)).reduceByKey(_ + _).sortBy(_._2, false)
+
+    /*val independentIP = */data
       .map(str => (str.substring(0, str.indexOf(" ")), 1))
       .reduceByKey(_ + _)
       .sortBy(_._2, false)

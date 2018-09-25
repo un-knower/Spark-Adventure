@@ -11,6 +11,14 @@ class LogAccumulator extends AccumulatorV2[String, java.util.Set[String]] {
     _logArray.isEmpty
   }
 
+  override def copy():org.apache.spark.util.AccumulatorV2[String, java.util.Set[String]] = {
+    val newAcc = new LogAccumulator()
+    _logArray.synchronized{
+      newAcc._logArray.addAll(_logArray)
+    }
+    newAcc
+  }
+
   override def reset(): Unit = {
     _logArray.clear()
   }
@@ -28,14 +36,6 @@ class LogAccumulator extends AccumulatorV2[String, java.util.Set[String]] {
 
   override def value: java.util.Set[String] = {
     java.util.Collections.unmodifiableSet(_logArray)
-  }
-
-  override def copy():org.apache.spark.util.AccumulatorV2[String, java.util.Set[String]] = {
-    val newAcc = new LogAccumulator()
-    _logArray.synchronized{
-      newAcc._logArray.addAll(_logArray)
-    }
-    newAcc
   }
 }
 

@@ -26,6 +26,14 @@ object tbInsertHive extends App {
     config(new SparkConf().setAppName("hiveTest").setMaster("local[*]")).getOrCreate() //local[*]
   import spark.implicits._
 
+  /** CSV read */
+  val stockRddCSV: DataFrame = spark.read.csv("sparksql\\sparksql_templ\\doc\\tbStock.txt")
+  val data: DataFrame = spark.read.format("com.databricks.spark.csv")
+    .option("header", "true") //这里如果在csv第一行有属性的话，没有就是"false"
+    .option("inferSchema", true.toString) //这是自动推断属性列的数据类型。
+    .load("sparksql\\sparksql_templ\\doc\\tbStock.txt")//文件的路径
+
+
   case class tbStock(orderNumber:String,locationId:String,dateId:String) extends Serializable
   val stockRdd: RDD[String] = spark.sparkContext.textFile("sparksql\\sparksql_templ\\doc\\tbStock.txt")
   val stock: Dataset[tbStock] = stockRdd.map { x =>

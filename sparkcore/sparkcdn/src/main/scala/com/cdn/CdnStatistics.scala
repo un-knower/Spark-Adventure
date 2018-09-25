@@ -22,7 +22,7 @@ object CdnStatistics {
   def main(args: Array[String]): Unit = {
     val sc = new SparkContext(new SparkConf().setMaster("local[*]").setAppName("CdnStatistics"))
 
-    val input = sc.textFile("D:\\Soft\\DevSoft\\IDEA\\spark\\sparkcore\\sparkcdn\\src\\main\\resources\\cdn.txt").cache()
+    val input = sc.textFile("sparkcore\\sparkcdn\\src\\main\\resources\\cdn.txt").cache()
     //IP      命中率     响应时间      请求时间      请求方法 请求URL 请求协议 状态码  响应大小     referer 用户代理
     //ClientIP Hit/Miss ResponseTime [RequestTime] Method URL Protocol StatusCode TrafficSize Referer UserAgent
     //111.19.97.15 HIT 18 [15/Feb/2017:00:00:39 +0800] "GET http://cdn.v.abc.com.cn/videojs/video-js.css HTTP/1.1" 200 14727 "http://www.zzqbsm.com/" "Mozilla/5.0+(Linux;+Android+5.1;+vivo+X6Plus+D+Build/LMY47I)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Version/4.0+Chrome/35.0.1916.138+Mobile+Safari/537.36+T7/7.4+baiduboxapp/8.2.5+(Baidu;+P1+5.1)"

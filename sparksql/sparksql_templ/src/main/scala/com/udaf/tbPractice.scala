@@ -119,7 +119,7 @@ object tbPractice extends App {
      """.stripMargin).show*/
 
     //第二步对
-  val result3MyBetter=spark.sql(
+  /*val result3MyBetter=spark.sql(
     s"""
        |SELECT
        |    *
@@ -139,7 +139,25 @@ object tbPractice extends App {
        |        GROUP BY c.theYear, b.itemId) t2) t3
        |WHERE t3.rank = 1
      """.stripMargin)
-  insertMySQL("xq3optimize", result3MyBetter)
+  insertMySQL("xq3optimize", result3MyBetter)*/
+
+    val result3MyBetter2=spark.sql(
+      s"""
+         |SELECT
+         |        *, MAX() over (PARTITION BY theYear
+         |                         ORDER BY sumAByYI DESC) maxSum
+         |    FROM
+         |        (SELECT
+         |            c.theYear, b.itemId, SUM(b.amount) AS sumAByYI
+         |        FROM
+         |            tbStock a
+         |            JOIN tbStockDetail b
+         |                ON a.orderNumber = b.orderNumber
+         |            JOIN tbDate c
+         |                ON a.dateId = c.dateId
+         |        GROUP BY c.theYear, b.itemId) t2
+     """.stripMargin)
+  insertMySQL("xq3optimizeMAX", result3MyBetter2)
 
   //老师的
   /**val result3 = spark.sql(

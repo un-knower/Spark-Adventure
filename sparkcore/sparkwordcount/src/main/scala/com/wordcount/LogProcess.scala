@@ -8,9 +8,9 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class AdClick(timeStamp: Long, province: Int, city: Int, uid: Int, adId: Int, hourStamp: String)
-
 object LogProcess {
+  case class AdClick(timeStamp: Long, province: Int, city: Int, uid: Int, adId: Int, hourStamp: String)
+
   def main(args: Array[String]): Unit = {
     val sc = new SparkContext(new SparkConf().setAppName("log").setMaster("local[*]"))
     //load data
