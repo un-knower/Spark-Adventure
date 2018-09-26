@@ -75,6 +75,13 @@
                 <!-- 编译环境能用，运行环境不可用 -->
                 <scope>${scope.version}</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-streaming_2.11</artifactId>
+                <version>${spark.version}</version>
+                <scope>${scope.version}</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
