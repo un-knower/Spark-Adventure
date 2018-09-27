@@ -2,7 +2,7 @@ package udaf
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.expressions.Aggregator
-import org.apache.spark.sql.{Encoder, Encoders, SparkSession}
+import org.apache.spark.sql.{Dataset, Encoder, Encoders, SparkSession}
 
 case class Employee(name: String, salary: Long)
 case class Aver(var sum: Long, var count: Int)
@@ -49,7 +49,7 @@ object AverageAggregator{
     import spark.implicits._
 
     //需要是DataSet
-    val employee = spark.read.json("sparksql\\sparksql_templ\\src\\main\\resources\\employees.json")
+    val employee: Dataset[Employee] = spark.read.json("sparksql\\sparksql_templ\\src\\main\\resources\\employees.json")
       .as[Employee]
 
     //注册强类型UDAF的方法

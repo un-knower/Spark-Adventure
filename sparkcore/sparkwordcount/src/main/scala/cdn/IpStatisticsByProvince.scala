@@ -19,7 +19,7 @@ object IpStatisticsByProvince {
     def ipProvinceRange(): Array[(Long, Long, String)] = {
       val ipProvinceRange: Array[(Long, Long, String)] = ipLocation.map { x =>
         val para = x.split("[|]")
-//        val para = x.split("\\|")
+//      val para = x.split("\\|")
         (para(2).toLong, para(3).toLong, para(6))
       }.collect()
 

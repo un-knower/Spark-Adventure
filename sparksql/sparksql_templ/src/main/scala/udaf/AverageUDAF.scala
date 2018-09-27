@@ -5,11 +5,7 @@ import org.apache.spark.sql.expressions.{MutableAggregationBuffer, UserDefinedAg
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SparkSession}
 
-/*{"name":"Michael", "salary":3000}
-{"name":"Andy", "salary":4500}
-{"name":"Justin", "salary":3500}
-{"name":"Berta", "salary":4000}
-  目标：求平均工资  【工资的总额，工资的个数】*/
+/*目标：求平均工资  【工资的总额，工资的个数】*/
 // =======================================================================
 // 弱类型UDAF usually with group by (按 属性的相同字段group)
 // =======================================================================
