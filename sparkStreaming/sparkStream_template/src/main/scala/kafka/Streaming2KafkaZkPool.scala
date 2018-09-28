@@ -14,7 +14,8 @@ import org.apache.spark.streaming.dstream.InputDStream
 import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRange}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-object Streaming2Kafka {
+//TODO
+object Streaming2KafkaZkPool {
   def main(args: Array[String]): Unit = {
 
     // 创建StreamingContext
@@ -47,7 +48,12 @@ object Streaming2Kafka {
     val zkConsumerGroupOffsetTopicDir = s"${zkGroupTopicDirs.consumerOffsetDir}"
 
     //创建一个到Zookeeper的连接
-    val zkClient = new ZkClient(zookeeperList) /**这里可优化用线程池*/
+    //用连接池获取zk连接
+    val genericObjectPoolOfZKProxy = ZkPool(zookeeperList)
+    //拿到具体的zkProxyFactory里的zkProxy
+    val ZKProxy = genericObjectPoolOfZKProxy.borrowObject()
+    val zkClient = ZKProxy.zkClient
+    /** 这里可优化用线程池 */
 
     //获取偏移的保存地址目录下的子节点数目
     val children = zkClient.countChildren(zkConsumerGroupOffsetTopicDir)
@@ -113,7 +119,7 @@ object Streaming2Kafka {
           nextOffset = curKafkaOffsets.head
         }
         println(s"Partition[$i] kafka的保质期内的offset是 : ${curKafkaOffsets.head}")
-        println(s"Partition[$i] 修正后的偏移信息是 : $nextOffset")
+        println(s"Partition[$i] 修正后放入的offset是 : $nextOffset")
 
         fromOffsets += (tp -> nextOffset) //把这个修正的offset加入
       }
@@ -122,10 +128,11 @@ object Streaming2Kafka {
       println("从ZK获取偏移量来创建DStream")
 
       zkClient.close()
+      //      genericObjectPoolOfZKProxy.returnObject(ZKProxy)
 
       //拿到 fromOffsets来新建stream
       stream = KafkaUtils.createDirectStream
-        [String, String, StringDecoder, StringDecoder, (String, String)/*R:ClassTag*/
+        [String, String, StringDecoder, StringDecoder, (String, String) /*R:ClassTag*/
           ](ssc, kafkaPro, fromOffsets, messageHandler)
 
     } else {
@@ -169,16 +176,21 @@ object Streaming2Kafka {
 
       /** 应该更新Offset */
       val updateGroupTopicDirs = new ZKGroupTopicDirs("kafka", fromTopic)
-      val updateZkClient = new ZkClient(zookeeperList)/**这里可优化用线程池*/
+      //用连接池获取zk连接
+      val genericObjectPoolOfZKProxy = ZkPool(zookeeperList)
+      //拿到具体的zkProxyFactory里的zkProxy
+      val ZKProxySecond = genericObjectPoolOfZKProxy.borrowObject()
+      val updateZkClient = ZKProxySecond.zkClient
 
+      /** 这里可优化用线程池 */
       for (offset <- offsetRanges) {
         println(offset)
         /* ls /consumers/kafka/offsets/from1           + /0\1 */
         val zkPath = s"${updateGroupTopicDirs.consumerOffsetDir}/${offset.partition}"
         //更新关键步骤
-        ZkUtils.updatePersistentPath(updateZkClient, zkPath, offset.fromOffset/*untilOffset*/.toString)
+        ZkUtils.updatePersistentPath(updateZkClient, zkPath, offset.fromOffset /*untilOffset*/ .toString)
+        genericObjectPoolOfZKProxy.returnObject(ZKProxySecond)
       }
-      updateZkClient.close()
       //get /consumers/kafka/offsets/from1/0 可以看到是同步了 offset
     }
 

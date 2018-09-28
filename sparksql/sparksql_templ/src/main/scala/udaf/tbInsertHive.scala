@@ -28,10 +28,13 @@ object tbInsertHive extends App {
 
   /** CSV read */
   val stockRddCSV: DataFrame = spark.read.csv("sparksql\\sparksql_templ\\doc\\tbStock.txt")
+    .toDF("orderNumber", "locationId", "dateId")   //66666666
+  stockRddCSV.show
   val data: DataFrame = spark.read.format("com.databricks.spark.csv")
-    .option("header", "true") //这里如果在csv第一行有属性的话，没有就是"false"
+    .option("header", "false") //这里如果在csv第一行有属性的话，没有就是"false"
     .option("inferSchema", true.toString) //这是自动推断属性列的数据类型。
-    .load("sparksql\\sparksql_templ\\doc\\tbStock.txt")//文件的路径
+    .load("sparksql\\sparksql_templ\\doc\\tbStock.txt") //文件的路径
+  data.show
 
 
   case class tbStock(orderNumber:String,locationId:String,dateId:String) extends Serializable
@@ -42,7 +45,7 @@ object tbInsertHive extends App {
   }.toDS
 //  stock.show
 //  stock.createOrReplaceTempView("tbStock")
-  insertHive(spark, "tbStock", stock.toDF)
+//  insertHive(spark, "tbStock", stock.toDF)
 
   case class tbStockDetail(orderNumber:String, rowNum:Int, itemId:String, number:Int, price:Double, amount:Double) extends Serializable
   val stockDetailRdd: RDD[String] = spark.sparkContext.textFile("sparksql\\sparksql_templ\\doc\\tbStockDetail.txt")
@@ -52,7 +55,7 @@ object tbInsertHive extends App {
   }.toDS
 //  stockDetail.show
 //  stockDetail.createOrReplaceTempView("tbStockDetail")
-  insertHive(spark, "tbStockDetail", stockDetail.toDF)
+//  insertHive(spark, "tbStockDetail", stockDetail.toDF)
 
   case class tbDate(dateId:String, years:Int, theYear:Int, month:Int, day:Int, weekday:Int, week:Int, quarter:Int, period:Int, halfMonth:Int) extends Serializable
   val dateRdd: RDD[String] = spark.sparkContext.textFile("sparksql\\sparksql_templ\\doc\\tbDate.txt")
@@ -62,7 +65,7 @@ object tbInsertHive extends App {
   }.toDS
   //  date.show
 //  date.createOrReplaceTempView("tbDate")
-  insertHive(spark, "tbDate", date.toDF)
+//  insertHive(spark, "tbDate", date.toDF)
 
   //需求一： 统计所有订单中每年的销售单数、销售总额
   //错了不能count * 要去重单号
