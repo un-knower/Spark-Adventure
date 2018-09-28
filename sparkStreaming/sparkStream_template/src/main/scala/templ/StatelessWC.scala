@@ -3,8 +3,7 @@ package templ
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-/** stateless */
-object StreamWorldCount {
+object StatelessWC {
   def main(args: Array[String]) {
     /*入口
     val ssc = new StreamingContext(new SparkConf().setAppName(appName).setMaster(master), Seconds(1))
@@ -31,7 +30,6 @@ object StreamWorldCount {
 
     // Print the first ten elements of each RDD generated in this DStream to the console
     resultDStream.print()
-    /** stateless */
 
     ssc.start()             // Start the computation
     ssc.awaitTermination()  // Wait for the computation to terminate

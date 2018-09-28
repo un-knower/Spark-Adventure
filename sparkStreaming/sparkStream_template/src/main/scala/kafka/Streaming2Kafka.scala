@@ -10,7 +10,7 @@ import org.I0Itec.zkclient.ZkClient
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.dstream.InputDStream
+import org.apache.spark.streaming.dstream.{DStream, InputDStream}
 import org.apache.spark.streaming.kafka.{HasOffsetRanges, KafkaUtils, OffsetRange}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
@@ -138,7 +138,7 @@ object Streaming2Kafka {
     var offsetRanges = Array[OffsetRange]()
 
     //获取采集的数据的偏移量
-    val mapDstream = stream.transform { rdd =>
+    val mapDStream: DStream[String] = stream.transform { rdd =>
       offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
       rdd
     }.map(_._2)
@@ -151,7 +151,7 @@ object Streaming2Kafka {
 
     /** 应该在这里获取上一次的Offset */
     //CTRL+ { }   以下方法在Executor里
-    mapDstream.map("ABC:" + _).foreachRDD { rdd =>
+    mapDStream.map("ABC:" + _).foreachRDD { rdd =>
       rdd.foreachPartition { items =>
         //写回kafka, 用连接池获取kafka连接
         val genericObjectPoolOfKafkaProxy = KafkaPool(brokers)

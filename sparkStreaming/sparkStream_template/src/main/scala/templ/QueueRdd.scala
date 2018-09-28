@@ -38,8 +38,6 @@ object QueueRdd {
       rddQueue += ssc.sparkContext.makeRDD(1 to 300, 10)
       Thread.sleep(2000)
 
-      //通过程序停止StreamingContext的运行
-      //ssc.stop()
     }
 
     ssc.awaitTermination()

@@ -3,7 +3,7 @@ package stateful
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-object MultState extends App {
+object MultiState extends App {
 
   // 需要创建一个StreamingContext
   val ssc = new StreamingContext(
