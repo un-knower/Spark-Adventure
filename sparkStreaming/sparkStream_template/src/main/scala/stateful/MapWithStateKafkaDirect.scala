@@ -9,7 +9,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object MapWithStateKafkaDirect extends App {
   val conf = new SparkConf().setAppName("MapWithStateKafkaDirect").setMaster("local[*]")
   val sc = SparkContext.getOrCreate(conf)
-  val checkpointDir = "./sparkStreaming/chkMapWithStateKafkaDirect"
+  val checkpointDir = "./sparkStreaming/checkpoint/MapWithStateKafkaDirect"
   val brokers = "hadoop102:9092,hadoop103:9092,hadoop104:9092"
 
   def mappingFunction(key: String, value: Option[Int], state: State[Long]): (String, Long) = {
@@ -30,6 +30,7 @@ object MapWithStateKafkaDirect extends App {
     val kafkaParams = Map("metadata.broker.list" -> brokers, "group.id" -> "kafka")
     val topics = Set("from1")
     val messages = KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder](ssc, kafkaParams, topics)
+
     val results: DStream[(String, Long)] = messages
       .filter(_._2.nonEmpty) /*过滤*/
       .mapPartitions(iter => {
@@ -45,3 +46,31 @@ object MapWithStateKafkaDirect extends App {
   ssc.start()
   ssc.awaitTermination()
 }
+/*
+-------------------------------------------
+Time: 1538148005000 ms
+-------------------------------------------
+(a,1)
+(b,1)
+(c,1)
+
+-------------------------------------------
+Time: 1538148010000 ms
+-------------------------------------------
+(a,2)
+
+-------------------------------------------
+Time: 1538148015000 ms
+-------------------------------------------
+(a,3)
+(a,4)
+(a,5)
+(a,6)
+(a,7)
+(a,8)
+
+-------------------------------------------
+Time: 1538148020000 ms
+-------------------------------------------
+(a,9)
+(b,2)*/

@@ -12,7 +12,7 @@ object UpdateStateByKeyWC extends App {
     Seconds(5))
 
   // 需要设置一个checkpoint的目录。
-  ssc.checkpoint("./sparkStreaming/chkUpdateStateByKeyWC")
+  ssc.checkpoint("./sparkStreaming/checkpoint/UpdateStateByKeyWC")
 
   // 通过StreamingContext来获取master01机器上9999端口传过来的语句
   val lines: ReceiverInputDStream[String] = ssc.socketTextStream("hadoop102", 9999)

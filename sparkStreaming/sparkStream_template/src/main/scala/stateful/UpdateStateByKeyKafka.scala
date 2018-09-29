@@ -14,7 +14,7 @@ object UpdateStateByKeyKafka extends App {
     Seconds(5))
 
   // 需要设置一个checkpoint的目录。
-  ssc.checkpoint("./sparkStreaming/chkUpdateStateByKeyKafka")
+  ssc.checkpoint("./sparkStreaming/checkpoint/UpdateStateByKeyKafka")
 
   val params = Map("bootstrap.servers" -> "hadoop102:9092,hadoop103:9092,hadoop104:9092"
     , "group.id" -> "kafka")

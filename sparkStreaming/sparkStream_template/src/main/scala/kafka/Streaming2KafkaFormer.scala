@@ -55,6 +55,7 @@ object Streaming2KafkaFormer {
       rdd.foreachPartition { items =>
         /**处理了业务*/
         for (item <- items) {
+          println(item)
         }
       }
     }

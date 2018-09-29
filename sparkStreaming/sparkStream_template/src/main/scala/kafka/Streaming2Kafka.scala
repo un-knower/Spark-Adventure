@@ -141,7 +141,7 @@ object Streaming2Kafka {
     val mapDStream: DStream[String] = stream.transform { rdd =>
       offsetRanges = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
       rdd
-    }.map(_._2)
+    }.map(_._2) //kafka (key,value)
 
     /** ZK偏移量逻辑 以上 */
 

@@ -6,7 +6,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 object StatelessWC {
   def main(args: Array[String]) {
     /*入口
-    val ssc = new StreamingContext(new SparkConf().setAppName(appName).setMaster(master), Seconds(1))
     // 可以通过ssc.sparkContext 来访问SparkContext        ssc=>sc
 
     // 或者通过已经存在的SparkContext来创建StreamingContext

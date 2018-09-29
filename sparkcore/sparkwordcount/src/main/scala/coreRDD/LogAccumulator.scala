@@ -8,36 +8,33 @@ import scala.collection.JavaConversions._
 class LogAccumulator extends AccumulatorV2[String, java.util.Set[String]] {
   private val _logArray: java.util.Set[String] = new java.util.HashSet[String]()
 
-  override def isZero: Boolean = {
-    _logArray.isEmpty
-  }
+  // 检测是否为空
+  override def isZero: Boolean = _logArray.isEmpty
 
-  override def copy():org.apache.spark.util.AccumulatorV2[String, java.util.Set[String]] = {
+  // 拷贝一个新的累加器
+  override def copy(): org.apache.spark.util.AccumulatorV2[String, java.util.Set[String]] = {
     val newAcc = new LogAccumulator()
-    _logArray.synchronized{
+    _logArray.synchronized {
       newAcc._logArray.addAll(_logArray)
     }
     newAcc
   }
 
-  override def reset(): Unit = {
-    _logArray.clear()
-  }
+  // 重置一个累加器
+  override def reset(): Unit = _logArray.clear()
 
-  override def add(v: String): Unit = {
-    _logArray.add(v)
-  }
+  // 每一个分区中用于添加数据的方法  小SUM
+  override def add(v: String): Unit = _logArray.add(v)
 
+  // 合并每一个分区的输出 总sum
   override def merge(other: org.apache.spark.util.AccumulatorV2[String, java.util.Set[String]]): Unit = {
     other match {
       case o: LogAccumulator => _logArray.addAll(o.value)
     }
-
   }
 
-  override def value: java.util.Set[String] = {
-    java.util.Collections.unmodifiableSet(_logArray)
-  }
+  override def value: java.util.Set[String] = java.util.Collections.unmodifiableSet(_logArray)
+
 }
 
 // 过滤掉带字母的

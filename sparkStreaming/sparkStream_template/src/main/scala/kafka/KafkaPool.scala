@@ -12,7 +12,8 @@ case class KafkaProxy(broker: String) {
     ProducerConfig.BOOTSTRAP_SERVERS_CONFIG -> broker
     ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer]
     ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG -> classOf[StringSerializer]
-  }*/ //错的
+  }*/
+  //错的
 
   var props: Properties = new Properties()
   props.put("bootstrap.servers", broker)
@@ -37,8 +38,10 @@ object KafkaPool {
   def apply(broker: String): GenericObjectPool[KafkaProxy] = {
     if (kafkaPool == null) {
       KafkaPool.synchronized {
-        //如果不设置第二个参数, 默认 是8个kafka连接实例
-        this.kafkaPool = new GenericObjectPool[KafkaProxy](new KafkaProxyFactory(broker))
+        if (kafkaPool == null) {
+          //如果不设置第二个参数, 默认 是8个kafka连接实例
+          this.kafkaPool = new GenericObjectPool[KafkaProxy](new KafkaProxyFactory(broker))
+        }
       }
     }
 

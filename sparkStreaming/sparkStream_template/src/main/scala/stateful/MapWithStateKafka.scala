@@ -8,7 +8,7 @@ import org.apache.spark.streaming.{Seconds, State, StateSpec, StreamingContext}
 object MapWithStateKafka extends App {
   val sparkConf = new SparkConf().setAppName("WordCount").setMaster("local")
   val ssc = new StreamingContext(sparkConf, Seconds(5))
-  ssc.checkpoint("./sparkStreaming/chkMapWithStateWC")
+  ssc.checkpoint("./sparkStreaming/checkpoint/MapWithStateWC")
 
   val params = Map("bootstrap.servers" -> "hadoop102:9092,hadoop103:9092,hadoop104:9092"
     , "group.id" -> "kafka")
@@ -19,7 +19,7 @@ object MapWithStateKafka extends App {
 
   //自定义mappingFunction，累加单词出现的次数并更新状态
   val mappingFunc = (word: String, count: Option[Int], state: State[Long]) => {
-    val sum = count.getOrElse(0) + state.getOption.getOrElse(0)
+    val sum = count.getOrElse(0) + state.getOption.getOrElse(0L)
     val output = (word, sum)
     state.update(sum)
     output
@@ -34,3 +34,31 @@ object MapWithStateKafka extends App {
   ssc.awaitTermination()
 
 }
+/*
+-------------------------------------------
+Time: 1538148005000 ms
+-------------------------------------------
+(a,1)
+(b,1)
+(c,1)
+
+-------------------------------------------
+Time: 1538148010000 ms
+-------------------------------------------
+(a,2)
+
+-------------------------------------------
+Time: 1538148015000 ms
+-------------------------------------------
+(a,3)
+(a,4)
+(a,5)
+(a,6)
+(a,7)
+(a,8)
+
+-------------------------------------------
+Time: 1538148020000 ms
+-------------------------------------------
+(a,9)
+(b,2)*/

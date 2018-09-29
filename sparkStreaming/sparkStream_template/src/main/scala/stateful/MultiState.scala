@@ -11,7 +11,7 @@ object MultiState extends App {
     Seconds(5))
 
   // 需要设置一个checkpoint的目录。
-  ssc.checkpoint("./sparkStreaming/checkpoint")
+  ssc.checkpoint("./sparkStreaming/checkpoint/MultiState")
 
   // 通过StreamingContext来获取master01机器上9999端口传过来的语句
   val lines = ssc.socketTextStream("hadoop102", 9999)
