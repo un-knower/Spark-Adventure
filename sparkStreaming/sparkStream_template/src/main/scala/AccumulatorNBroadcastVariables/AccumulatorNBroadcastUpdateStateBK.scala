@@ -10,7 +10,7 @@ object AccumulatorNBroadcastUpdateStateBK extends App {
 
   //单例 广播变量
   object WordBlacklist {
-    private var instance: Broadcast[Seq[String]] = _
+    @volatile private var instance: Broadcast[Seq[String]] = _
 
     def getInstance(sc: SparkContext): Broadcast[Seq[String]] = {
       if (instance == null) {
@@ -27,7 +27,7 @@ object AccumulatorNBroadcastUpdateStateBK extends App {
 
   //单例 累加器
   object DroppedWordsCounter {
-    private var instance: LongAccumulator = _
+    @volatile private var instance: LongAccumulator = _
 
     def getInstance(sc: SparkContext): LongAccumulator = {
       if (instance == null) {

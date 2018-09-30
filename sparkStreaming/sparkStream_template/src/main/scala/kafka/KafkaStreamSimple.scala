@@ -13,7 +13,7 @@ import org.apache.spark.streaming.{Duration, StreamingContext}
 object KafkaStreamSimple {
   def main(args: Array[String]): Unit = {
     //创建StreamingContext
-    val ssc = new StreamingContext(new SparkConf().setAppName("kafkaStream").setMaster("local[*]"), Duration(10))
+    val ssc = new StreamingContext(new SparkConf().setAppName("kafkaStream").setMaster("local[*]"), Duration(5))
 
     //指定消息topic名称
     val topic = "wordcount"

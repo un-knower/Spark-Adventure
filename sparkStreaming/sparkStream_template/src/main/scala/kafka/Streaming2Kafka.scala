@@ -16,7 +16,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object Streaming2Kafka {
   def main(args: Array[String]): Unit = {
-
     // 创建StreamingContext
     val ssc = new StreamingContext(new SparkConf().setAppName("kafka").setMaster("local[*]"), Seconds(5))
 
