@@ -63,6 +63,7 @@ object RDDDataFrameSet extends App {
   println(dataSet.getClass) //DataSet[People] Schema是case class People
   dataSet.show
 
+  println("====== 2、DataSet  -》  RDD（case class 确定schema）=================================")
   val rddPeople: RDD[People] = dataSet.rdd
   println(rddPeople.collect().mkString(" | ")) //DataSet转换的rdd是强类型
   println(rddPeople.map(_.name).collect().mkString(" | ")) //DataSet转换的rdd是强类型
