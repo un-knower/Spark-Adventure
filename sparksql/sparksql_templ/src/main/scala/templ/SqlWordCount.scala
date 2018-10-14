@@ -19,3 +19,26 @@ object SqlWordCount extends App {
   spark.sql("SELECT value word,COUNT(*) count FROM data GROUP BY value ORDER BY count DESC").show()
 
 }
+/*
++-------+
+|  value|
++-------+
+|Michael|
+|     29|
+|   Andy|
+|     30|
+| Justin|
+|     19|
++-------+
+
++-------+-----+
+|   word|count|
++-------+-----+
+|     19|    1|
+|Michael|    1|
+|     29|    1|
+|   Andy|    1|
+|     30|    1|
+| Justin|    1|
++-------+-----+
+*/

@@ -24,7 +24,9 @@ class AverageUDAF extends UserDefinedAggregateFunction{
 
   // 初始化每一个分区中的 共享变量
   override def initialize(buffer: MutableAggregationBuffer): Unit = {
+    //工资的总额
     buffer(0) = 0L
+    //存工资的个数
     buffer(1) = 0
   }
 

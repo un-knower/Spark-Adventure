@@ -44,6 +44,7 @@ object AccumulatorNBroadcast extends App {
   val ssc = new StreamingContext(
     new SparkConf().setMaster("local[*]").setAppName("AccumulatorNBroadcast")
     , Seconds(5)) //一个接收器要有一个线程  至少要  local[2]
+
   ssc.checkpoint("./sparkStreaming/checkpoint/AccumulatorNBroadcast")
 
 

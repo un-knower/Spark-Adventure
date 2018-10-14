@@ -9,11 +9,12 @@ object SqlTemplate extends App {
   val sc = spark.sparkContext
 
   val people: DataFrame = spark.read.json("sparksql\\sparksql_templ\\src\\main\\resources\\people.json")
-  people.cache()
   people.select("name").show()
   people.show()
+
   people.createOrReplaceTempView("people")
   spark.sql("select * from people where age > 19").show()
+
   import spark.implicits._
   println(people.map(_.getAs[String]("name")).collect().mkString(" "))
 }

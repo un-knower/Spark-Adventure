@@ -3,9 +3,9 @@ package mllib
 import org.apache.spark.mllib.clustering.KMeans
 import org.apache.spark.mllib.linalg.Vectors
 import org.apache.spark
-import org.apache.spark.sql.Row
+import org.apache.spark.sql.{Dataset, Row}
 import org.apache.spark.sql.hive.HiveContext
-import org.apache.spark.{SparkContext, SparkConf}
+import org.apache.spark.{SparkConf, SparkContext}
 
 /**
  * Created by hadoop on 5/10/15.
@@ -33,7 +33,7 @@ object OrderKmeans {
     val data = hiveContext.sql("select a.orderlocation, sum(b.itemqty) totalqty,sum(b.itemamout) totalamount from tbl_stock a join tbl_stockdetail b on a.orderid=b.orderid group by a.orderlocation")
 
     //将日志数据转变成Vectors
-    val parsedata = data.map{
+    val parsedata = data.rdd.map{
       case Row(_,totalqty,totalamount) =>
         val features = Array[Double](totalqty.toString.toDouble,totalamount.toString.toDouble)
         Vectors.dense(features)
@@ -47,7 +47,7 @@ object OrderKmeans {
 
     //用模型对我们到数据进行预测
 
-    val resrdd = data.map{
+    val resrdd: Dataset[String] = data.map{
 
       case Row(orderlocation,totalqty,totalamount) =>
         //提取到每一行到特征值
@@ -62,7 +62,7 @@ object OrderKmeans {
 
     }
 
-    resrdd.saveAsTextFile("hdfs://weekend01:9000/sparksql/kmeansout/")
+//    resrdd.saveAsTextFile("hdfs://weekend01:9000/sparksql/kmeansout/")
 
     sc.stop()
   }

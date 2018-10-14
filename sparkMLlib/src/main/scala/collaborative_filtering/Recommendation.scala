@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 // scalastyle:off println
 package collaborative_filtering
 
@@ -36,7 +19,7 @@ object RecommendationExample {
     val sc = new SparkContext(conf)
 
     //加载数据
-    val path = "C:\\Users\\Administrator\\Desktop\\Spark\\3.code\\spark\\sparkMLlib\\sparkmllib_collaborative_filtering\\src\\main\\resources\\test.data"
+    val path = "D:\\Soft\\DevSoft\\IDEA\\spark\\sparkMLlib\\src\\main\\resources\\testfiltering.data"
     val data = sc.textFile(path)
     val ratings = data.map(_.split(',') match { case Array(user, item, rate) =>
       Rating(user.toInt, item.toInt, rate.toDouble)
@@ -72,9 +55,9 @@ object RecommendationExample {
     println("预测的均方误差为 = " + MSE)
 
     //保存模型
-    model.save(sc, "target/tmp/myCollaborativeFilter")
+//    model.save(sc, "target/tmp/myCollaborativeFilter")
     //加载模型
-    val sameModel = MatrixFactorizationModel.load(sc, "target/tmp/myCollaborativeFilter")
+//    val sameModel = MatrixFactorizationModel.load(sc, "target/tmp/myCollaborativeFilter")
 
     sc.stop()
   }

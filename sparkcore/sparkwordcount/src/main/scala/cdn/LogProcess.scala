@@ -1,4 +1,4 @@
-package coreRDD
+package cdn
 
 import java.text.SimpleDateFormat
 import java.util.Date

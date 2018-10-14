@@ -153,6 +153,7 @@ object Transformations extends App {
   //  Array[(Int, (Iterable[Int], Iterable[String]))] = Array((1,(CompactBuffer(1, e),CompactBuffer(a, d))),(2,(CompactBuffer(3, 4),CompactBuffer(b))),(3,(CompactBuffer(5),CompactBuffer(c))))
 
   /*20、def cartesian[U: ClassTag](other: RDD[U]): RDD[(T, U)]  做笛卡尔积。  n * m
+
   21、def pipe(command: String): RDD[String] 执行外部脚本
   val rdd = sc.parallelize(List("hi","Hello","how","are","you"),1)
   rdd.pipe("/home/atguigu/pipe.sh").collect()

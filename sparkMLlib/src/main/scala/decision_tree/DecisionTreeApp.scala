@@ -16,7 +16,7 @@ object DecisionTreeApp extends App{
   val conf = new SparkConf().setMaster("local[4]").setAppName("DecisionTree")
   val sc = new SparkContext(conf)
 
-  val path = "C:\\Users\\Administrator\\Desktop\\Spark\\3.code\\spark\\sparkMLlib\\sparkmllib_decision_tree\\src\\main\\resources\\data.txt"
+  val path = "D:\\Soft\\DevSoft\\IDEA\\spark\\sparkMLlib\\src\\main\\resources\\datatree.txt"
   //加载数据文件
   val data = MLUtils.loadLibSVMFile(sc, path)
   //将数据集切分为70%的训练数据集和30%的测试数据集
@@ -45,9 +45,9 @@ object DecisionTreeApp extends App{
   println("训练的决策树模型:\n" + model.toDebugString)
 
   //保存决策树模型
-  model.save(sc, "target/tmp/myDecisionTreeClassificationModel")
+//  model.save(sc, "target/tmp/myDecisionTreeClassificationModel")
   //重新读取决策树模型
-  val sameModel = DecisionTreeModel.load(sc, "target/tmp/myDecisionTreeClassificationModel")
+//  val sameModel = DecisionTreeModel.load(sc, "target/tmp/myDecisionTreeClassificationModel")
 
   sc.stop()
 

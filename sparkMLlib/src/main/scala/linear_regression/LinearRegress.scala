@@ -8,7 +8,7 @@ import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.mllib.regression.LinearRegressionModel
 import org.apache.spark.mllib.regression.LinearRegressionWithSGD
 
-object LinearRegression {
+object LinearRegress {
 
   def main(args: Array[String]): Unit = {
 
@@ -21,7 +21,7 @@ object LinearRegression {
     val sc = new SparkContext(conf)
 
     //加载数据样本
-    val path = "C:\\Users\\Administrator\\Desktop\\Spark\\3.code\\spark\\sparkMLlib\\sparkmllib_linear_regression\\src\\main\\resources\\data.txt";
+    val path = "D:\\Soft\\DevSoft\\IDEA\\spark\\sparkMLlib\\src\\main\\resources\\dataLinear.txt";
 
     //通过提供的工具类加载样本文件
     val data = MLUtils.loadLibSVMFile(sc,path).cache()
@@ -52,9 +52,9 @@ object LinearRegression {
     println("训练模型的均方误差为 = " + MSE)
 
     //保存模型
-    model.save(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
+//    model.save(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
     //重新加载模型
-    val sameModel = LinearRegressionModel.load(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
+//    val sameModel = LinearRegressionModel.load(sc, "target/tmp/scalaLinearRegressionWithSGDModel")
 
     sc.stop()
   }
