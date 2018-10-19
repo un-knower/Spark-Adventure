@@ -117,15 +117,18 @@ object Streaming2Kafka {
         fromOffsets += (tp -> nextOffset) //把这个修正的offset加入
       }
 
-      val messageHandler = (mmd: MessageAndMetadata[String, String]) => (mmd.topic, mmd.message)
+      // 拿了 topic 和 messageValue
       println("从ZK获取偏移量来创建DStream")
 
       zkClient.close()
 
       //拿到 fromOffsets来新建stream
       stream = KafkaUtils.createDirectStream
-        [String, String, StringDecoder, StringDecoder, (String, String)/*R:ClassTag*/
-          ](ssc, kafkaPro, fromOffsets, messageHandler)
+        [String, String, StringDecoder, StringDecoder, (String, String)/*R:ClassTag*/](
+          ssc,
+          kafkaPro,
+          fromOffsets,
+          (mmd: MessageAndMetadata[String, String]) => (mmd.topic, mmd.message))
 
     } else {
       println("直接创建,没有从ZK中获取偏移量")
@@ -134,6 +137,7 @@ object Streaming2Kafka {
           ](ssc, kafkaPro, Set(fromTopic))
     }
 
+    /** 这是外部变量 */
     var offsetRanges = Array[OffsetRange]()
 
     //获取采集的数据的偏移量
